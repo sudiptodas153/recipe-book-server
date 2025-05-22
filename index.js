@@ -82,6 +82,19 @@ async function run() {
             res.send(result)
         })
 
+
+        app.put('/recipes/:id',async(req,res)=>{
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const options = { upsert: true };
+            const updateRecipe = req.body;
+            const updateDoc = {
+                $set: updateRecipe.like
+            }
+            const result = await recipeCollection.updateOne(filter, updateDoc,options);
+            res.send(result)
+        } )
+
         app.delete('/recipes/:id', async (req, res) => {
             const id = req.params.id;
             const quarry = { _id: new ObjectId(id) }
