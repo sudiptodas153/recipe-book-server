@@ -28,12 +28,12 @@ async function run() {
         const recipeCollection = client.db("recipeDB").collection("recipes");
         const userCollection = client.db("recipeDB").collection("Users")
 
-            app.get('/top-recipes', async (req, res) => {
+        app.get('/top-recipes', async (req, res) => {
 
-                const topRecipes = await recipeCollection.find().sort({ like: -1 }).limit(6).toArray();
-                res.send(topRecipes);
+            const topRecipes = await recipeCollection.find().sort({ like: -1 }).limit(6).toArray();
+            res.send(topRecipes);
 
-            });
+        });
 
 
         app.get('/recipes', async (req, res) => {
@@ -47,6 +47,13 @@ async function run() {
             const result = await recipeCollection.findOne(quarry);
             res.send(result);
         })
+
+        // app.get('/recipes/:email', async (req, res) => {
+        //     const email = req.params.email;
+        //     const quarry = {userEmail: new ObjectId(email)}
+        //     const result = await recipeCollection.findOne(quarry);
+        //     res.send(result)
+        // })
 
         app.get('/my-recipes', async (req, res) => {
 
@@ -63,7 +70,17 @@ async function run() {
         })
 
 
-
+        app.put('/recipes/:id', async(req,res)=>{
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const options = { upsert: true };
+            const updatedRecipe = req.body;
+            const updateDoc ={
+                $set: updatedRecipe
+            }
+            const result = await recipeCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
 
         app.delete('/recipes/:id', async (req, res) => {
             const id = req.params.id;
@@ -74,12 +91,12 @@ async function run() {
 
         // API......
 
-        app.get('/users', async(req,res)=>{
+        app.get('/users', async (req, res) => {
             const result = await userCollection.find().toArray();
             res.send(result)
         })
 
-        app.post('/users', async(req,res)=>{
+        app.post('/users', async (req, res) => {
             const userProfile = req.body;
             console.log(userProfile);
             const result = await userCollection.insertOne(userProfile);
