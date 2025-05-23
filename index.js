@@ -28,6 +28,7 @@ async function run() {
         const recipeCollection = client.db("recipeDB").collection("recipes");
         const userCollection = client.db("recipeDB").collection("Users")
         const chefCollection = client.db("recipeDB").collection("chefs")
+        const feedbackCollection = client.db("recipeDB").collection("feedback")
 
         app.get('/top-recipes', async (req, res) => {
 
@@ -82,6 +83,12 @@ async function run() {
             res.send(result);
         })
 
+
+        app.post('/feedback', async(req,res)=>{
+            const newFeedback = req.body;
+            const result = await feedbackCollection.insertOne(newFeedback);
+            res.send(result);
+        })
 
         app.put('/recipes/:id', async (req, res) => {
             const id = req.params.id;
