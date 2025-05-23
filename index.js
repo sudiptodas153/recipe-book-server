@@ -27,6 +27,7 @@ async function run() {
     try {
         const recipeCollection = client.db("recipeDB").collection("recipes");
         const userCollection = client.db("recipeDB").collection("Users")
+        const chefCollection = client.db("recipeDB").collection("chefs")
 
         app.get('/top-recipes', async (req, res) => {
 
@@ -48,13 +49,6 @@ async function run() {
             res.send(result);
         })
 
-        // app.get('/recipes/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     const quarry = {userEmail: new ObjectId(email)}
-        //     const result = await recipeCollection.findOne(quarry);
-        //     res.send(result)
-        // })
-
         app.get('/my-recipes', async (req, res) => {
 
             const result = await recipeCollection.find().toArray();
@@ -63,19 +57,30 @@ async function run() {
         })
 
         app.post('/recipes', async (req, res) => {
-            const newCoffee = req.body;
-            const result = await recipeCollection.insertOne(newCoffee);
+            const newRecipe = req.body;
+            const result = await recipeCollection.insertOne(newRecipe);
             res.send(result)
 
         })
 
+        app.get('/chefs', async (req, res) => {
+            const result = await chefCollection.find().toArray();
+            res.send(result)
+        })
 
-        app.put('/recipes/:id', async(req,res)=>{
+        app.post('/chefs', async (req, res) => {
+            const newChef = req.body;
+            const result = await chefCollection.insertOne(newChef);
+            res.send(result);
+        })
+
+
+        app.put('/recipes/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updatedRecipe = req.body;
-            const updateDoc ={
+            const updateDoc = {
                 $set: updatedRecipe
             }
             const result = await recipeCollection.updateOne(filter, updateDoc, options);
@@ -83,17 +88,17 @@ async function run() {
         })
 
 
-        app.put('/recipes/:id',async(req,res)=>{
+        app.put('/recipes/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updateRecipe = req.body;
             const updateDoc = {
                 $set: updateRecipe.like
             }
-            const result = await recipeCollection.updateOne(filter, updateDoc,options);
+            const result = await recipeCollection.updateOne(filter, updateDoc, options);
             res.send(result)
-        } )
+        })
 
         app.delete('/recipes/:id', async (req, res) => {
             const id = req.params.id;
@@ -111,7 +116,7 @@ async function run() {
 
         app.post('/users', async (req, res) => {
             const userProfile = req.body;
-            console.log(userProfile);
+            // console.log(userProfile);
             const result = await userCollection.insertOne(userProfile);
             res.send(result);
         })
