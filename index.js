@@ -94,6 +94,13 @@ async function run() {
             res.send(result);
         })
 
+        app.delete('/feedback/:id', async(req,res)=>{
+            const id = req.params.id;
+            const quarry = {_id: new ObjectId(id)};
+            const result = await feedbackCollection.deleteOne(quarry)
+            res.send(result)
+        })
+
         app.put('/recipes/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
