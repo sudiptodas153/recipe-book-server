@@ -32,14 +32,14 @@ async function run() {
 
         app.get('/top-recipes', async (req, res) => {
 
-            const topRecipes = await recipeCollection.find().sort({ like: -1 }).limit(6).toArray();
+            const topRecipes = await recipeCollection.find().sort({ like: -1 }).limit(8).toArray();
             res.send(topRecipes);
 
         });
 
 
         app.get('/recipes', async (req, res) => {
-            const result = await recipeCollection.find().toArray();
+            const result = await recipeCollection.find().sort({time: -1}).toArray();
             res.send(result)
         })
 
